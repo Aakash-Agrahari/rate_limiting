@@ -1,9 +1,11 @@
 package com.example.rate_limiter.limiter;
 
 import com.example.rate_limiter.model.RateLimitEntry;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class FixedWindowRateLimiter implements RateLimiter{
     private final ConcurrentHashMap<String, RateLimitEntry> clients =
             new ConcurrentHashMap<>();
