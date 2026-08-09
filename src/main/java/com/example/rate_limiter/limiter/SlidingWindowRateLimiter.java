@@ -7,6 +7,13 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+//Sliding Window Rate Limiting is a technique that controls how many requests a user can make within a moving time
+// period. Instead of dividing time into fixed blocks, it continuously looks at the most recent time window.
+// For example, if the limit is 5 requests per 1 minute, the system checks the requests made during the last 60 seconds
+// whenever a new request arrives. If there are fewer than 5 requests, the new request is allowed; if there are already
+// 5, it is rejected until some older requests fall outside the window. This makes rate limiting more smooth and
+// accurate compared to the Fixed Window approach.
+
 @Component
 public class SlidingWindowRateLimiter implements RateLimiter {
     private static final int LIMIT = 5;
