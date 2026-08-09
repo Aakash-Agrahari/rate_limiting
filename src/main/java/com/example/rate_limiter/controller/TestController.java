@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/api")
+@RestController()
 public class TestController {
     private final RateLimiter rateLimiter;
 
@@ -16,10 +16,10 @@ public class TestController {
         this.rateLimiter = rateLimiter;
     }
 
-    @GetMapping("/test")
+    @GetMapping("/api/test")
     public ResponseEntity<String> test(@RequestHeader("X-Client-Id") String clientId){
         boolean allowed = rateLimiter.allowRequest(clientId);
-
+        
         if(!allowed){
             return ResponseEntity
                     .status(HttpStatus.TOO_MANY_REQUESTS)
