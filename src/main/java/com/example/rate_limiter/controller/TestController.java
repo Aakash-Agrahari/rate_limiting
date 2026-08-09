@@ -19,7 +19,7 @@ public class TestController {
     @GetMapping("/api/test")
     public ResponseEntity<String> test(@RequestHeader("X-Client-Id") String clientId){
         boolean allowed = rateLimiter.allowRequest(clientId);
-        
+
         if(!allowed){
             return ResponseEntity
                     .status(HttpStatus.TOO_MANY_REQUESTS)
