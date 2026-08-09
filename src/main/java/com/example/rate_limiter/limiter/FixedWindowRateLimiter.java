@@ -8,13 +8,14 @@ public class FixedWindowRateLimiter implements RateLimiter{
     private final ConcurrentHashMap<String, RateLimitEntry> clients =
             new ConcurrentHashMap<>();
 
-    private final int limit;
-    private final long windowSizeMillis;
+    private static final int limit = 5;
+    private static final long windowSizeMillis = 10_000;
 
-    public FixedWindowRateLimiter(int limit, long windowSizeMillis) {
+    //this is to provide the rate limiting value by ourself
+    /*public FixedWindowRateLimiter(int limit, long windowSizeMillis) {
         this.limit = limit;
         this.windowSizeMillis = windowSizeMillis;
-    }
+    }*/
 
     @Override
     public boolean allowRequest(String clientId) {
@@ -29,7 +30,7 @@ public class FixedWindowRateLimiter implements RateLimiter{
                 entry.setWindowStart(currentTime);
                 entry.setRequestCount(0);
             }
-            
+
             if(entry.getRequestCount() >= limit){
                 return false;
             }
