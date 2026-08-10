@@ -12,6 +12,37 @@ public class TokenBucketRateLimiter implements RateLimiter {
 
     @Override
     public boolean allowRequest(String clientId) {
-        return false;
+        long currentTime = System.currentTimeMillis();
+
+        TokenBucket bucket = clients.computeIfAbsent(
+                clientId,
+                id -> new TokenBucket(
+                        CAPACITY,
+                        currentTime
+                )
+        );
+
+        synchronized (bucket){
+            refillTokens(bucket, currentTime);
+
+            if(bucket.getTokens() < 1){
+                return false;
+            }
+            bucket.setTokens(
+                    bucket.getTokens() - 1
+            );
+            return true;
+        }
+    }
+    private void refillTokens(TokenBucket bucket, long currentTime){
+        long elapsedTime = bucket.getLastRefillTime();
+        double tokensToAdd = (elapsedTime / 1000.0) * REFILL_RATE;
+        double newTokenCount = Math.min(
+                CAPACITY,
+                bucket.getTokens() + tokensToAdd
+        );
+
+        bucket.setTokens(newTokenCount);
+        bucket.setLastRefillTime(currentTime);
     }
 }
