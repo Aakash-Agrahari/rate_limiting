@@ -1,5 +1,6 @@
 package com.example.rate_limiter.limiter;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayDeque;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 // accurate compared to the Fixed Window approach.
 
 @Component
+@Primary
 public class SlidingWindowRateLimiter implements RateLimiter {
     private static final int LIMIT = 5;
     private static final long WINDOW_SIZE_MILLIS = 10_000;
