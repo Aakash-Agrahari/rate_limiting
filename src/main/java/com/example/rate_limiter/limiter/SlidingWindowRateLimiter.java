@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 // accurate compared to the Fixed Window approach.
 
 @Component
-@Primary
 public class SlidingWindowRateLimiter implements RateLimiter {
     private static final int LIMIT = 5;
     private static final long WINDOW_SIZE_MILLIS = 10_000;
