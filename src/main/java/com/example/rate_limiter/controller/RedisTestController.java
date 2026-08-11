@@ -16,7 +16,7 @@ public class RedisTestController {
 
     @GetMapping("/redis-test")
     public String testRedis(){
-        redisTemplate.opsForValue().set("ratelimiter:test", "Redis is working");
-        return redisTemplate.opsForValue().get("rate.limiter:test");
+        redisTemplate.opsForValue().set("rate-limiter:test", "Redis is working");
+        return redisTemplate.opsForValue().get("rate-limiter:test");
     }
 }
