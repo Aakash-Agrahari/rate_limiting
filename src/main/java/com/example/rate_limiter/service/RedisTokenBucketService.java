@@ -1,7 +1,9 @@
 package com.example.rate_limiter.service;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RedisTokenBucketService {
     private final StringRedisTemplate redisTemplate;
 
