@@ -26,7 +26,7 @@ if tokens < 1 then
             key,
             'tokens',
             tokens,
-            'lastRefillTime'
+            'lastRefillTime',
             lastRefillTime
     )
     return 0
@@ -35,7 +35,7 @@ end
 tokens = tokens - 1
 
 redis.call(
-        'HSET'
+        'HSET',
         key,
         'tokens',
         tokens,
