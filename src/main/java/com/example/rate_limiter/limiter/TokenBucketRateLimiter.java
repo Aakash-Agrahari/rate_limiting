@@ -16,8 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 // controlling the average request rate over time.
 
 
-@Component
-@Primary
+
 public class TokenBucketRateLimiter implements RateLimiter {
     private final int CAPACITY;
     private final double REFILL_RATE;
