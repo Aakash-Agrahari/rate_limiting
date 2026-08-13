@@ -7,6 +7,7 @@ local key = KEYS[1]
 local capacity = tonumber(ARGV[1])
 local refillRate = tonumber(ARGV[2])
 local currentTime = tonumber(ARGV[3])
+local ttl = tonumber(ARGV[4])
 
 local tokens = tonumber(
         redis.call('HGET', key, 'tokens')
@@ -45,6 +46,12 @@ if tokens < 1 then
             lastRefillTime
     )
 
+    redis.call(
+            'EXPIRE',
+            key,
+            ttl
+    )
+
     return 0
 end
 
@@ -57,6 +64,12 @@ redis.call(
         tokens,
         'lastRefillTime',
         lastRefillTime
+)
+
+redis.call(
+        'EXPIRE',
+        key,
+        ttl
 )
 
 return 1
