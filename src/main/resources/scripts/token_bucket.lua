@@ -37,6 +37,9 @@ lastRefillTime = currentTime
 
 if tokens < 1 then
 
+    local retryAfter =
+    math.ceil((1 - tokens) / refillRate)
+
     redis.call(
             'HSET',
             key,
@@ -52,7 +55,10 @@ if tokens < 1 then
             ttl
     )
 
-    return 0
+    return "0|" ..
+            math.floor(tokens) ..
+            "|" ..
+            retryAfter
 end
 
 tokens = tokens - 1
@@ -72,4 +78,6 @@ redis.call(
         ttl
 )
 
-return 1
+return "1|" ..
+        math.floor(tokens) ..
+        "|0"
