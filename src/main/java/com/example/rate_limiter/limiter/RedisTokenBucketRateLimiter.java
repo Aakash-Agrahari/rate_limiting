@@ -17,17 +17,20 @@ public class RedisTokenBucketRateLimiter implements RateLimiter {
 
     private final int capacity;
     private final double refillRate;
+    private final long bucketTtl;
 
     public RedisTokenBucketRateLimiter(
             StringRedisTemplate redisTemplate,
             DefaultRedisScript<Long> tokenBucketScript,
             @Value("${rate-limit.capacity}") int capacity,
-            @Value("${rate-limit.refill-rate}") double refillRate) {
+            @Value("${rate-limit.refill-rate}") double refillRate,
+            @Value("${rate-limit.bucket-ttl}") long bucketTtl) {
 
         this.redisTemplate = redisTemplate;
         this.tokenBucketScript = tokenBucketScript;
         this.capacity = capacity;
         this.refillRate = refillRate;
+        this.bucketTtl = bucketTtl;
     }
 
     @Override
@@ -42,7 +45,8 @@ public class RedisTokenBucketRateLimiter implements RateLimiter {
                 Collections.singletonList(key),
                 String.valueOf(capacity),
                 String.valueOf(refillRate),
-                String.valueOf(currentTime)
+                String.valueOf(currentTime),
+                String.valueOf(bucketTtl)
         );
 
         return result != null && result == 1L;
