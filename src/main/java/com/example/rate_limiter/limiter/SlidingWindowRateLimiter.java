@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 // 5, it is rejected until some older requests fall outside the window. This makes rate limiting more smooth and
 // accurate compared to the Fixed Window approach.
 
-@Component
+/*@Component
 public class SlidingWindowRateLimiter implements RateLimiter {
     private static final int LIMIT = 5;
     private static final long WINDOW_SIZE_MILLIS = 10_000;
@@ -44,3 +44,4 @@ public class SlidingWindowRateLimiter implements RateLimiter {
         }
     }
 }
+*/

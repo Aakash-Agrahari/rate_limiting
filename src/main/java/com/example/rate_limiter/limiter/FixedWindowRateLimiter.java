@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 // of requests within each interval. For example, if the limit is 5 requests per minute, the system counts
 // requests from 10:00:00 to 10:00:59; once the user reaches 5 requests, further requests are rejected until
 // the next window starts at 10:01:00, when the counter resets to 0.
-
+/*
 @Component
 public class FixedWindowRateLimiter implements RateLimiter{
     private final ConcurrentHashMap<String, RateLimitEntry> clients =
@@ -20,10 +20,10 @@ public class FixedWindowRateLimiter implements RateLimiter{
     private static final long windowSizeMillis = 10_000;
 
     //this is to provide the rate limiting value by ourself
-    /*public FixedWindowRateLimiter(int limit, long windowSizeMillis) {
-        this.limit = limit;
-        this.windowSizeMillis = windowSizeMillis;
-    }*/
+    //public FixedWindowRateLimiter(int limit, long windowSizeMillis) {
+    //    this.limit = limit;
+    //    this.windowSizeMillis = windowSizeMillis;
+    //}
 
     @Override
     public boolean allowRequest(String clientId) {
@@ -49,4 +49,4 @@ public class FixedWindowRateLimiter implements RateLimiter{
             return true;
         }
     }
-}
+}*/

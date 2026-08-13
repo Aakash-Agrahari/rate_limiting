@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 
-public class TokenBucketRateLimiter implements RateLimiter {
+/*public class TokenBucketRateLimiter implements RateLimiter {
     private final int CAPACITY;
     private final double REFILL_RATE;
 
@@ -64,3 +64,4 @@ public class TokenBucketRateLimiter implements RateLimiter {
         bucket.setLastRefillTime(currentTime);
     }
 }
+*/
