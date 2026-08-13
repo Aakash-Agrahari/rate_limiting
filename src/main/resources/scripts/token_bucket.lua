@@ -1,3 +1,7 @@
+--[[
+We are using this lua script for the execution of rate limiting with Redis. It guarantees the absolute atomicity and
+eliminate race conditions in the distributed system.
+]]
 local key = KEYS[1]
 
 local capacity = tonumber(ARGV[1])
