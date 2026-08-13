@@ -9,9 +9,9 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 public class RedisRateLimiterConfig {
 
     @Bean
-    public DefaultRedisScript<Long> tokenBucketScript() {
+    public DefaultRedisScript<String> tokenBucketScript() {
 
-        DefaultRedisScript<Long> script =
+        DefaultRedisScript<String> script =
                 new DefaultRedisScript<>();
 
         script.setLocation(
@@ -20,7 +20,7 @@ public class RedisRateLimiterConfig {
                 )
         );
 
-        script.setResultType(Long.class);
+        script.setResultType(String.class);
 
         return script;
     }
