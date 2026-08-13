@@ -1,5 +1,6 @@
 package com.example.rate_limiter.limiter;
 
+import com.example.rate_limiter.model.RateLimitResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,7 +14,7 @@ import java.util.Collections;
 public class RedisTokenBucketRateLimiter implements RateLimiter {
 
     private final StringRedisTemplate redisTemplate;
-    private final DefaultRedisScript<Long> tokenBucketScript;
+    private final DefaultRedisScript<String> tokenBucketScript;
 
     private final int capacity;
     private final double refillRate;
@@ -21,7 +22,7 @@ public class RedisTokenBucketRateLimiter implements RateLimiter {
 
     public RedisTokenBucketRateLimiter(
             StringRedisTemplate redisTemplate,
-            DefaultRedisScript<Long> tokenBucketScript,
+            DefaultRedisScript<String> tokenBucketScript,
             @Value("${rate-limit.capacity}") int capacity,
             @Value("${rate-limit.refill-rate}") double refillRate,
             @Value("${rate-limit.bucket-ttl}") long bucketTtl) {
@@ -34,13 +35,14 @@ public class RedisTokenBucketRateLimiter implements RateLimiter {
     }
 
     @Override
-    public boolean allowRequest(String clientId) {
+    public RateLimitResult allowRequest(String clientId) {
 
         String key = "rate-limit:" + clientId;
 
-        long currentTime = System.currentTimeMillis();
+        long currentTime =
+                System.currentTimeMillis();
 
-        Long result = redisTemplate.execute(
+        String result = redisTemplate.execute(
                 tokenBucketScript,
                 Collections.singletonList(key),
                 String.valueOf(capacity),
@@ -49,6 +51,28 @@ public class RedisTokenBucketRateLimiter implements RateLimiter {
                 String.valueOf(bucketTtl)
         );
 
-        return result != null && result == 1L;
+        if (result == null) {
+            throw new IllegalStateException(
+                    "Rate limiter returned no result"
+            );
+        }
+
+        String[] parts = result.split("\\|");
+
+        boolean allowed =
+                parts[0].equals("1");
+
+        long remaining =
+                Long.parseLong(parts[1]);
+
+        long retryAfter =
+                Long.parseLong(parts[2]);
+
+        return new RateLimitResult(
+                allowed,
+                capacity,
+                remaining,
+                retryAfter
+        );
     }
 }
