@@ -51,4 +51,25 @@ public class RedisTokenBucketRateLimiterTest {
                 result.retryAfterSeconds() > 0
         );
     }
+
+    @Test
+    void differentClientsShouldHaveIndependentBuckets(){
+        //Exhaust Aakash's bucket
+        for(int i=0; i<5; i++){
+            rateLimiter.allowRequest("Aakash");
+        }
+        RateLimitResult aakashResult = rateLimiter.allowRequest("Aakash");
+
+        //Sky should still have a full bucket
+        RateLimitResult skyResult = rateLimiter.allowRequest("Sky");
+        assertFalse(aakashResult.allowed());
+        assertTrue(skyResult.allowed());
+        assertEquals(
+                4,
+                skyResult.remaining()
+        );
+    }
+
+    @Test
+    
 }
