@@ -29,14 +29,21 @@ public class RedisTokenBucketRateLimiterTest {
 
     @BeforeEach
     void cleanRedis(){
-        redisTemplate.delete("rate-limit: Aakash");
-        redisTemplate.delete("rate-limit: Sky");
+        redisTemplate.delete("rate-limit:Aakash");
+        redisTemplate.delete("rate-limit:Sky");
     }
 
     @Test
     void shouldAllowFiveInitialRequests(){
         for(int i=1; i<=5; i++){
             RateLimitResult result = rateLimiter.allowRequest("Aakash");
+            System.out.println(
+                    "Request " + i +
+                            " -> allowed=" + result.allowed() +
+                            ", limit=" + result.limit() +
+                            ", remaining=" + result.remaining() +
+                            ", retryAfter=" + result.retryAfterSeconds()
+            );
             assertTrue(
                     result.allowed(),
                     "Request " + i + " should be allowed"
@@ -143,4 +150,49 @@ public class RedisTokenBucketRateLimiterTest {
                 rejected
         );
     }
+
+    @Test
+    void shouldAllowRequestAfterTokenRefill()
+            throws InterruptedException {
+
+        // Consume all 5 tokens
+        for (int i = 0; i < 5; i++) {
+            rateLimiter.allowRequest("Aakash");
+        }
+
+        // Bucket should now be empty
+        RateLimitResult rejected =
+                rateLimiter.allowRequest("Aakash");
+
+        System.out.println(
+                "Immediately after exhaustion -> allowed="
+                        + rejected.allowed()
+                        + ", remaining="
+                        + rejected.remaining()
+                        + ", retryAfter="
+                        + rejected.retryAfterSeconds()
+        );
+
+        assertFalse(rejected.allowed());
+
+        // Wait approximately 2 seconds.
+        // Refill rate = 0.5 token/second
+        // Therefore 1 token is generated every 2 seconds.
+        Thread.sleep(2100);
+
+        RateLimitResult allowed =
+                rateLimiter.allowRequest("Aakash");
+
+        System.out.println(
+                "After refill -> allowed="
+                        + allowed.allowed()
+                        + ", remaining="
+                        + allowed.remaining()
+                        + ", retryAfter="
+                        + allowed.retryAfterSeconds()
+        );
+
+        assertTrue(allowed.allowed());
+    }
+
 }
