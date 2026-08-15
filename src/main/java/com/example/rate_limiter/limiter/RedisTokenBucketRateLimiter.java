@@ -50,6 +50,11 @@ public class RedisTokenBucketRateLimiter implements RateLimiter {
                 String.valueOf(currentTime),
                 String.valueOf(bucketTtl)
         );
+        System.out.println("================================");
+        System.out.println("Client ID: " + clientId);
+        System.out.println("Redis key: " + key);
+        System.out.println("Lua result: " + result);
+        System.out.println("================================");
 
         if (result == null) {
             throw new IllegalStateException(
