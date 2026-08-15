@@ -39,7 +39,7 @@ public class RedisTokenBucketRateLimiterTest {
             RateLimitResult result = rateLimiter.allowRequest("Aakash");
             assertTrue(
                     result.allowed(),
-                    "Request " + i + "should be allowed"
+                    "Request " + i + " should be allowed"
             );
         }
     }
