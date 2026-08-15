@@ -9,31 +9,29 @@ local refillRate = tonumber(ARGV[2])
 local currentTime = tonumber(ARGV[3])
 local ttl = tonumber(ARGV[4])
 
-local tokens = tonumber(
-        redis.call('HGET', key, 'tokens')
-)
+local tokens = redis.call('HGET', key, 'tokens')
+local lastRefillTime = redis.call('HGET', key, 'lastRefillTime')
 
-local lastRefillTime = tonumber(
-        redis.call('HGET', key, 'lastRefillTime')
-)
-
-if tokens == nil then
+if tokens == false then
     tokens = capacity
     lastRefillTime = currentTime
+else
+    tokens = tonumber(tokens)
+    lastRefillTime = tonumber(lastRefillTime)
+
+    local elapsedTime =
+    (currentTime - lastRefillTime) / 1000.0
+
+    local tokensToAdd =
+    elapsedTime * refillRate
+
+    tokens = math.min(
+            capacity,
+            tokens + tokensToAdd
+    )
+
+    lastRefillTime = currentTime
 end
-
-local elapsedTime =
-(currentTime - lastRefillTime) / 1000.0
-
-local tokensToAdd =
-elapsedTime * refillRate
-
-tokens = math.min(
-        capacity,
-        tokens + tokensToAdd
-)
-
-lastRefillTime = currentTime
 
 if tokens < 1 then
 
